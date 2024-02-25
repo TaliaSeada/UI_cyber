@@ -18,13 +18,6 @@ with open('model.pkl', 'rb') as model_file:
     model = pickle.load(model_file)
 
 
-# Function to check if content contains PowerShell script
-def is_powershell_script(content):
-    if 'PowerShell' in content:
-        return True
-    else:
-        return False
-
 
 # preprocess
 def clean_script(script):
@@ -179,30 +172,32 @@ def classify():
     classification_result = ""
 
     try:
-        # Check if a file is uploaded
-        if 'fileInput' in request.files:
-            file = request.files['fileInput']
-            file_content = file.read().decode("utf-8")
-            if is_powershell_script(file_content):
-                # If the uploaded file contains PowerShell script, classify it using the model
-                predicted_label = preprocess(file_content)
-                if predicted_label[0] == 0:
-                    classification_result = "Malicious"
-                else:
-                    classification_result = "Benign"
-            else:
-                classification_result = "Uploaded file is not a PowerShell script."
-        else:
-            # If no file is uploaded, classify the text input using the model
+        if len(text_input) > 0:
             predicted_label = preprocess(text_input)
             if predicted_label[0] == 0:
                 classification_result = "Malicious"
             else:
                 classification_result = "Benign"
 
+        # Check if a file is uploaded
+        elif 'fileInput' in request.files:
+            file = request.files['fileInput']
+            file_content = file.read().decode("utf-8")
+            if len(file_content) == 0:
+                return "Please enter a text or upload a file"
+
+            # If the uploaded file contains PowerShell script, classify it using the model
+            predicted_label = preprocess(file_content)
+            if predicted_label[0] == 0:
+                classification_result = "Malicious"
+            else:
+                classification_result = "Benign"
+
+        else:
+            classification_result = "Please enter a text or upload a file"
+
     except Exception as e:
         # Log the exception along with request details
-
         app.logger.error(f"An error occurred during classification: {str(e)}")
         app.logger.error(f"Request data: {request.form} {request.files}")
         # Return a generic error message

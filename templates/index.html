@@ -9,9 +9,11 @@
 <body>
     <div class="container">
         <h1>Machine Learning Model UI</h1>
-        <textarea id="textInput" rows="4" placeholder="Enter text..."></textarea>
-        <input type="file" id="fileInput" accept=".ps1">
-        <button id="classifyButton">Classify</button>
+        <form id="classificationForm" action="/classify" method="post" enctype="multipart/form-data">
+            <textarea id="textInput" name="textInput" rows="4" placeholder="Enter text..."></textarea>
+            <input type="file" id="fileInput" name="fileInput" accept=".ps1">
+            <button id="classifyButton" type="submit">Classify</button>
+        </form>
         <div id="output"></div>
     </div>
     <script src="{{ url_for('static', filename='script.js') }}"></script>

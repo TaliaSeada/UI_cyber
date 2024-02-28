@@ -13,9 +13,12 @@ import pickle
 
 app = Flask(__name__)
 
-# Load your machine learning model
-with open('model.pkl', 'rb') as model_file:
-    model = pickle.load(model_file)
+# # Load your machine learning model
+# with open('model.pkl', 'rb') as model_file:
+#     model = pickle.load(model_file)
+
+# with open('mix_model.pkl', 'rb') as model_file:
+#     model = pickle.load(model_file)
 
 
 
@@ -106,14 +109,18 @@ def preprocess(text_input):
     # preprocess
     clean = clean_script(text_input)
     # Load the TF-IDF vectorizer
-    with open('vectorizer.pkl', 'rb') as file:
+    # with open('vectorizer.pkl', 'rb') as file:
+    #     vectorizer = pickle.load(file)
+    with open('mix_vectorizer.pkl', 'rb') as file:
         vectorizer = pickle.load(file)
     # Load the SelectKBest instance
-    with open('selector.pkl', 'rb') as file:
+    # with open('selector.pkl', 'rb') as file:
+    #     selector = pickle.load(file)
+    with open('mix_selector.pkl', 'rb') as file:
         selector = pickle.load(file)
     # Load the selected feature names DataFrame
-    X_selected_df = pd.read_pickle('selected_features.pkl')
-    # Assuming 'new_data' contains your new data
+    # X_selected_df = pd.read_pickle('selected_features.pkl')
+    X_selected_df = pd.read_pickle('mix_selected_features.pkl')
     # Apply the TF-IDF vectorizer to the new data
     X_tfidf = vectorizer.transform([clean])
     # Apply the loaded SelectKBest instance to the TF-IDF transformed data
@@ -153,7 +160,9 @@ def preprocess(text_input):
     X_new_selected_df_with_features = pd.concat([X_new_selected_df, new_features], axis=1)
 
     # Load the trained model
-    with open('model.pkl', 'rb') as file:
+    # with open('model.pkl', 'rb') as file:
+    #     model = pickle.load(file)
+    with open('mix_model.pkl', 'rb') as file:
         model = pickle.load(file)
 
     # Use the model to make predictions
